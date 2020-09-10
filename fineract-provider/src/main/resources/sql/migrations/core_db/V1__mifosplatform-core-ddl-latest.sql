@@ -70,6 +70,9 @@ DROP TABLE IF EXISTS `m_savings_product`;
 DROP TABLE IF EXISTS `m_staff`;
 DROP TABLE IF EXISTS `ref_loan_transaction_processing_strategy`;
 DROP TABLE IF EXISTS `x_registered_table`;
+DROP TABLE IF EXISTS `m_insurance_benefactor`;
+DROP TABLE IF EXISTS `m_insurance_beneficiary`;
+DROP TABLE IF EXISTS `m_insurance_medic_report`;
 
 -- drop reporting related tables
 DROP TABLE IF EXISTS `r_enum_value`;
@@ -962,4 +965,67 @@ CREATE TABLE `stretchy_report_parameter` (
   PRIMARY KEY (`report_id`,`parameter_id`),
   UNIQUE KEY `report_id_name_UNIQUE` (`report_id`,`report_parameter_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
 -- =========== end of reporting related tables ============
+
+-- DDL for life insurance related tables
+CREATE TABLE `m_insurance_benefactor` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `full_name` varchar(255) NOT NULL,
+  `curp` varchar(255) NOT NULL,
+  `nss` BIGINT NOT NULL,
+  `genre` varchar(50) NOT NULL,
+  `blood_type` varchar(50) NOT NULL,
+  `address` varchar(500) NOT NULL,
+  `country` varchar(255) NOT NULL,
+  `state` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `postal_code` INT NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone_number` BIGINT NOT NULL,
+  `salary` FLOAT NOT NULL,
+  `insured_amount` FLOAT NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `curp` (`curp`),
+  UNIQUE KEY `nss` (`nss`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+CREATE TABLE `m_insurance_beneficiary` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `id_insurance_benefactor` BIGINT NOT NULL,
+  `full_name` varchar(255) NOT NULL,
+  `curp` varchar(255) NOT NULL,
+  `nss` BIGINT NOT NULL,
+  `genre` varchar(50) NOT NULL,
+  `address` varchar(500) NOT NULL,
+  `country` varchar(255) NOT NULL,
+  `state` varchar(255) NOT NULL,
+  `city` varchar(255) NOT NULL,
+  `postal_code` INT NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone_number` BIGINT NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`id_insurance_benefactor`) REFERENCES `m_insurance_benefactor`(`id`),
+  UNIQUE KEY `curp` (`curp`),
+  UNIQUE KEY `nss` (`nss`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+CREATE TABLE `m_insurance_medic_report` (
+  `id` BIGINT NOT NULL AUTO_INCREMENT,
+  `id_insurance_benefactor` BIGINT NOT NULL,
+  `date` date NOT NULL,
+  `weight` FLOAT NOT NULL,
+  `imc` FLOAT NOT NULL,
+  `blood_pressure` FLOAT NOT NULL,
+  `uric_acid` FLOAT DEFAULT NULL,
+  `cholesterol` FLOAT DEFAULT NULL,
+  `triglycerides` FLOAT DEFAULT NULL,
+  `creatine` FLOAT DEFAULT NULL,
+  `chronic_diseases` varchar(5000) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`id_insurance_benefactor`) REFERENCES `m_insurance_benefactor`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=UTF8MB4;
+
+-- ================= end of life insurance tables =============
